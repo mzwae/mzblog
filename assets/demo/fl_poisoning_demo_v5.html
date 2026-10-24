@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spotting the Cheaters: A Study Group Lesson</title>
+<style>
+  :root {
+    --navy: #1F2A44;
+    --teal: #0F766E;
+    --cream: #FBF8F1;
+    --ink: #1A1A1A;
+    --red: #B91C1C;
+    --green: #15803D;
+    --orange: #C2410C;
+    --grey: #6B7280;
+    --blue: #1D4ED8;
+    --gold: #B45309;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 19px;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--cream);
+  }
+  header { background: var(--navy); color: #fff; padding: 16px 24px; }
+  header h1 { margin: 0; font-size: 24px; }
+
+  .progress { height: 8px; background: #E5E7EB; }
+  .progress div { height: 100%; background: var(--teal); transition: width 0.3s; }
+
+  main { max-width: 860px; margin: 0 auto; padding: 20px; }
+
+  .stepno { font-size: 15px; color: var(--grey); font-weight: bold; margin-bottom: 4px; }
+  h2 { font-size: 28px; margin: 0 0 8px; color: var(--navy); }
+  .lead { font-size: 20px; margin: 0 0 18px; }
+
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+  @media (max-width: 680px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  .student {
+    background: #fff;
+    border: 3px solid #E5E7EB;
+    border-radius: 14px;
+    padding: 10px 6px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    color: var(--ink);
+    font-family: inherit;
+  }
+  .student svg { display: block; margin: 4px auto; }
+  .student .sc { font-size: 17px; min-height: 24px; }
+  .student.picked { border-color: var(--blue); background: #EFF6FF; }
+  .student.kept { border-color: var(--green); }
+  .student.blocked { border-color: var(--red); background: #FEF2F2; }
+  .student.typical { border-style: dashed; border-color: var(--grey); cursor: default; }
+
+  .info {
+    background: #fff;
+    border: 2px solid #E5E7EB;
+    border-radius: 14px;
+    padding: 14px 18px;
+    margin-bottom: 16px;
+    font-size: 19px;
+  }
+  .info strong { color: var(--navy); }
+
+  .slider-wrap { background: #fff; border: 2px solid #E5E7EB; border-radius: 14px; padding: 14px 18px; margin-bottom: 14px; }
+  .slider-wrap label { font-weight: bold; font-size: 19px; display: block; margin-bottom: 6px; }
+  input[type=range] { width: 100%; }
+  .count { font-size: 20px; font-weight: bold; margin-top: 6px; }
+
+  .compasses { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+  @media (max-width: 680px) { .compasses { grid-template-columns: 1fr; } }
+  .compass { background: #fff; border: 2px solid #E5E7EB; border-radius: 14px; padding: 12px; text-align: center; }
+  .compass h3 { margin: 0; font-size: 19px; }
+  .compass .sub { font-size: 16px; color: var(--grey); margin: 2px 0 6px; }
+  .compass .verdict { font-weight: bold; font-size: 18px; min-height: 28px; }
+  .ok-t { color: var(--green); }
+  .bad-t { color: var(--red); }
+  .mid-t { color: var(--grey); }
+
+  .question {
+    background: #FEF9C3;
+    border: 2px solid #CA8A04;
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 16px;
+  }
+  .question h3 { margin: 0 0 8px; font-size: 20px; }
+  .choice {
+    display: block;
+    width: 100%;
+    text-align: left;
+    margin: 8px 0;
+    background: #fff;
+    color: var(--ink);
+    border: 2px solid #CA8A04;
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-family: inherit;
+    font-size: 18px;
+    cursor: pointer;
+  }
+  .choice:disabled { cursor: default; }
+  .choice.right { background: #D1FAE5; border-color: var(--green); color: var(--green); font-weight: bold; }
+  .choice.wrong { background: #FEE2E2; border-color: var(--red); color: var(--red); font-weight: bold; }
+
+  .banner {
+    margin-top: 10px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  .banner.ok { background: #D1FAE5; color: var(--green); }
+  .banner.bad { background: #FEE2E2; color: var(--red); }
+
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+  }
+  button.nav-btn {
+    font-family: inherit;
+    font-size: 19px;
+    font-weight: bold;
+    padding: 12px 24px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    background: var(--teal);
+    color: #fff;
+  }
+  button.nav-btn.secondary { background: #E5E7EB; color: var(--ink); }
+  button.nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .hint { font-size: 16px; color: var(--grey); }
+
+  .keyline { font-size: 16px; color: var(--grey); margin-top: 6px; }
+  ul.summary { font-size: 19px; padding-left: 22px; }
+  ul.summary li { margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Spotting the Cheaters: A Study Group Lesson</h1>
+</header>
+<div class="progress"><div id="bar"></div></div>
+
+<main id="app"></main>
+
+<script>
+// ---------- Fixed, predictable data ----------
+const TRUE_ANG = Math.PI / 4;             // correct answer: 45 degrees (the star)
+const TRUE_VEC = { x: Math.cos(TRUE_ANG), y: Math.sin(TRUE_ANG) };
+const HONEST_OFFSETS = [-0.15, 0.1, -0.05, 0.2, 0.0];   // five honest students
+const CHEAT_OFFSETS = [0.1, -0.1, 0.05];                // three cheaters (opposite direction, bigger arrows)
+const CHEAT_MAG = 2;
+
+function median(arr) {
+  const s = [...arr].sort((a, b) => a - b);
+  const m = Math.floor(s.length / 2);
+  return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+}
+function cosine(a, b) {
+  const na = Math.hypot(a.x, a.y), nb = Math.hypot(b.x, b.y);
+  if (na === 0 || nb === 0) return 0;
+  return (a.x * b.x + a.y * b.y) / (na * nb);
+}
+function build() {
+  const list = [];
+  HONEST_OFFSETS.forEach(o => list.push({ angle: TRUE_ANG + o, mag: 1, bad: false }));
+  CHEAT_OFFSETS.forEach(o => list.push({ angle: TRUE_ANG + Math.PI + o, mag: CHEAT_MAG, bad: true }));
+  list.forEach((s, i) => {
+    s.id = i + 1;
+    s.name = 'Student ' + (i + 1);
+    s.x = Math.cos(s.angle) * s.mag;
+    s.y = Math.sin(s.angle) * s.mag;
+  });
+  const ref = { x: median(list.map(s => s.x)), y: median(list.map(s => s.y)) };
+  list.forEach(s => { s.trust = Math.max(0, cosine(s, ref)); });
+  return { students: list, ref };
+}
+const DATA = build();
+const STUDENTS = DATA.students;
+const REF = DATA.ref;
+const REF_ANG = Math.atan2(REF.y, REF.x);
+
+// ---------- State ----------
+const state = {
+  screen: 0,               // 0..4 lessons, 5 = done
+  pick: null,              // student tapped on screen 1
+  thr: 0.3,                // trust line set on screen 2
+  answers: { q1: null, q2: null }   // { val, ok } once answered
+};
+const FIRST_BLOCKED = STUDENTS.find(s => s.bad);   // a cheater, for question 1
+
+// ---------- Drawing helpers ----------
+function arrowSvg(angle, color, size = 56) {
+  const c = size / 2, r = size / 2 - 8;
+  const x2 = c + r * Math.cos(angle), y2 = c - r * Math.sin(angle);
+  const hx = c + (r - 10) * Math.cos(angle), hy = c - (r - 10) * Math.sin(angle);
+  const px = -Math.sin(angle) * 6, py = -Math.cos(angle) * 6;
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+    <line x1="${c}" y1="${c}" x2="${hx}" y2="${hy}" stroke="${color}" stroke-width="4" stroke-linecap="round"/>
+    <polygon points="${x2},${y2} ${hx + px},${hy + py} ${hx - px},${hy - py}" fill="${color}"/>
+  </svg>`;
+}
+
+function compassSvg(heading, color) {
+  const cx = 100, cy = 100, r = 80;
+  const sx = cx + r * 0.78 * Math.cos(TRUE_ANG), sy = cy - r * 0.78 * Math.sin(TRUE_ANG);
+  let html = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="3"/>`;
+  html += `<text x="${sx}" y="${sy + 8}" font-size="28" text-anchor="middle" fill="#B45309">★</text>`;
+  if (heading !== null) {
+    const x2 = cx + r * 0.7 * Math.cos(heading), y2 = cy - r * 0.7 * Math.sin(heading);
+    html += `<line x1="${cx}" y1="${cy}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="8" stroke-linecap="round"/>`;
+  }
+  html += `<circle cx="${cx}" cy="${cy}" r="8" fill="${color}"/>`;
+  return `<svg width="190" height="190" viewBox="0 0 200 200">${html}</svg>`;
+}
+
+// average of a set of students, with optional trust weighting
+function average(students, weighted, thr) {
+  let sw = 0, ax = 0, ay = 0;
+  students.forEach(s => {
+    if (weighted) {
+      if (s.trust < thr) return;
+      sw += s.trust; ax += s.trust * s.x; ay += s.trust * s.y;
+    } else {
+      sw += 1; ax += s.x; ay += s.y;
+    }
+  });
+  return sw > 0 ? { x: ax / sw, y: ay / sw } : { x: 0, y: 0 };
+}
+
+function verdictFor(vec) {
+  const len = Math.hypot(vec.x, vec.y);
+  if (len === 0) return { text: 'No direction', cls: 'mid-t' };
+  const c = cosine(vec, TRUE_VEC);
+  if (c >= 0.7) return { text: 'Points at the star', cls: 'ok-t' };
+  if (c < 0) return { text: 'Points away from the star', cls: 'bad-t' };
+  return { text: 'Partly toward the star', cls: 'mid-t' };
+}
+
+// ---------- Screens ----------
+function studentCards(mode) {
+  return STUDENTS.map(s => {
+    if (mode === 'neutral') {
+      return `<div class="student">Student ${s.id}<br>${arrowSvg(s.angle, '#0F766E')}</div>`;
+    }
+    if (mode === 'tap') {
+      const picked = state.pick === s.id ? ' picked' : '';
+      return `<button class="student${picked}" data-act="pick" data-i="${s.id}">
+        Student ${s.id}${arrowSvg(s.angle, '#0F766E')}
+      </button>`;
+    }
+    return '';
+  }).join('');
+}
+
+function screenIntro() {
+  return `
+    <div class="stepno">Step 1 of 5</div>
+    <h2>Meet the study group</h2>
+    <p class="lead">Eight students each write one answer for a shared study guide. Each answer is an arrow. The guide is the average of all the arrows.</p>
+    <div class="grid">${studentCards('neutral')}</div>
+    <div class="info"><strong>Your task:</strong> three students are cheating by writing the opposite answer. Can you spot them?</div>`;
+}
+
+function screenTypical() {
+  const pickedStudent = STUDENTS.find(s => s.id === state.pick);
+  let detail = 'Tap a student to see how close their answer is to the typical answer.';
+  if (pickedStudent) {
+    const c = cosine(pickedStudent, REF).toFixed(2);
+    const verdict = pickedStudent.trust >= 0.3
+      ? 'Their arrow points roughly the same way as the typical answer, so it agrees with the group.'
+      : 'Their arrow points the opposite way to the typical answer, so it disagrees with the group.';
+    detail = `<strong>${pickedStudent.name}</strong> has a score of <strong>${c}</strong>. ${verdict}`;
+  }
+  return `
+    <div class="stepno">Step 2 of 5</div>
+    <h2>Find the typical answer</h2>
+    <p class="lead">The <strong>median</strong> is the middle answer, the most typical arrow. It is shown as the dashed grey card. Tap a student and compare.</p>
+    <div class="grid">
+      <div class="student typical">Typical<br>${arrowSvg(REF_ANG, '#6B7280')}</div>
+      ${studentCards('tap')}
+    </div>
+    <div class="info" id="detail">${detail}</div>`;
+}
+
+function cutCards() {
+  return STUDENTS.map(s => {
+    const kept = s.trust >= state.thr;
+    const cls = kept ? 'kept' : 'blocked';
+    const color = kept ? '#15803D' : '#B91C1C';
+    return `<div class="student ${cls}">${s.name}<br>${arrowSvg(s.angle, color)}
+      <div class="sc">Score ${s.trust.toFixed(2)}</div>
+      <div class="sc" style="color:${color}">${kept ? 'Kept' : 'Blocked'}</div></div>`;
+  }).join('');
+}
+
+function countText() {
+  const kept = STUDENTS.filter(s => s.trust >= state.thr).length;
+  return `Kept: <span class="ok-t">${kept}</span> &nbsp;&nbsp; Blocked: <span class="bad-t">${STUDENTS.length - kept}</span>`;
+}
+
+function screenCut() {
+  return `
+    <div class="stepno">Step 3 of 5</div>
+    <h2>Set the trust line</h2>
+    <p class="lead">Students whose score is below the line get <strong>blocked</strong>. Move the line and watch who is kept.</p>
+    <div class="slider-wrap">
+      <label for="thr">Trust line: <span id="thrVal">${state.thr.toFixed(2)}</span></label>
+      <input type="range" id="thr" min="0" max="1" step="0.01" value="${state.thr}">
+      <div class="count" id="count">${countText()}</div>
+    </div>
+    <div class="grid" id="cutGrid">${cutCards()}</div>
+    <div class="info"><strong>Try it:</strong> push the line very high. Do honest students get blocked too?</div>`;
+}
+
+function screenGuide() {
+  const plain = average(STUDENTS, false, state.thr);
+  const kept = average(STUDENTS, true, state.thr);
+  const vP = verdictFor(plain), vK = verdictFor(kept);
+  return `
+    <div class="stepno">Step 4 of 5</div>
+    <h2>Compare the two study guides</h2>
+    <p class="lead">Left: every answer counts equally. Right: only the kept students count, weighted by their trust score. The line is set to <strong>${state.thr.toFixed(2)}</strong> from the last step.</p>
+    <div class="compasses">
+      <div class="compass">
+        <h3>Without blocking</h3>
+        <div class="sub">Every student counts</div>
+        ${compassSvg(Math.atan2(plain.y, plain.x), '#C2410C')}
+        <div class="verdict ${vP.cls}"><strong>${vP.text}</strong></div>
+      </div>
+      <div class="compass">
+        <h3>With blocking</h3>
+        <div class="sub">Only kept students count</div>
+        ${compassSvg(Math.atan2(kept.y, kept.x), '#15803D')}
+        <div class="verdict ${vK.cls}"><strong>${vK.text}</strong></div>
+      </div>
+    </div>
+    <div class="info">The star is the correct answer. The arrow shows where the study guide is pointing.</div>`;
+}
+
+function questionBlock(q, title, options, correctVal, okText, badText) {
+  const answered = state.answers[q];
+  const buttons = options.map(o => {
+    let cls = 'choice';
+    if (answered) {
+      if (o.val === correctVal) cls += ' right';
+      else if (o.val === answered.val) cls += ' wrong';
+    }
+    return `<button class="${cls}" data-act="answer" data-q="${q}" data-val="${o.val}" ${answered ? 'disabled' : ''}>${o.text}</button>`;
+  }).join('');
+  let banner = '';
+  if (answered) {
+    banner = answered.ok
+      ? `<div class="banner ok">Correct. ${okText}</div>`
+      : `<div class="banner bad">Not quite. ${badText}</div>`;
+  }
+  return `<div class="question"><h3>${title}</h3>${buttons}${banner}</div>`;
+}
+
+function screenCheck() {
+  const q1 = questionBlock('q1',
+    `Why was <strong>${FIRST_BLOCKED.name}</strong> blocked?`,
+    [
+      { val: 'a', text: 'Its arrow pointed far from the typical answer, in the opposite direction' },
+      { val: 'b', text: 'It was the first student in the list' },
+      { val: 'c', text: 'It was chosen at random' }
+    ],
+    'a',
+    'A cheater sends the opposite direction, so its score falls below the line.',
+    'The score measures direction. An arrow pointing the opposite way gets a low score.');
+  const q2 = questionBlock('q2',
+    'Why does the median help protect the study guide?',
+    [
+      { val: 'a', text: 'One cheater cannot pull the middle answer far away' },
+      { val: 'b', text: 'It always picks the biggest arrow' },
+      { val: 'c', text: 'It removes all the noise from the answers' }
+    ],
+    'a',
+    'The middle answer stays with the honest students, even if a few cheat.',
+    'The median is the middle value, so one extreme answer cannot move it far.');
+  const both = state.answers.q1 && state.answers.q2;
+  return `
+    <div class="stepno">Step 5 of 5</div>
+    <h2>Quick check</h2>
+    <p class="lead">Answer both questions. Feedback appears under each one.</p>
+    ${q1}
+    ${q2}
+    <div class="hint">${both ? 'Nice work. Press Finish to see the summary.' : 'Answer both questions to finish.'}</div>`;
+}
+
+function screenDone() {
+  return `
+    <div class="stepno">Done</div>
+    <h2>You can explain the idea</h2>
+    <ul class="summary">
+      <li>Each student sends an arrow, and the guide is their average.</li>
+      <li>Cheaters send arrows pointing the opposite way.</li>
+      <li>The median finds the typical answer, which a few cheaters cannot move.</li>
+      <li>Each student gets a trust score. Scores below the line are blocked.</li>
+      <li>Blocking cheaters keeps the study guide on target.</li>
+    </ul>
+    <p class="keyline">Next: try the trust line yourself on step 3, or run the lesson again.</p>`;
+}
+
+// ---------- Render ----------
+const SCREENS = [screenIntro, screenTypical, screenCut, screenGuide, screenCheck, screenDone];
+
+function nav() {
+  const onFirst = state.screen === 0;
+  const onCheck = state.screen === 4;
+  const onDone = state.screen === 5;
+  const bothAnswered = state.answers.q1 && state.answers.q2;
+  let next;
+  if (onDone) {
+    next = `<button class="nav-btn" data-act="restart">Start again</button>`;
+  } else if (onCheck) {
+    next = `<button class="nav-btn" data-act="next" ${bothAnswered ? '' : 'disabled'}>Finish</button>`;
+  } else {
+    next = `<button class="nav-btn" data-act="next">Next</button>`;
+  }
+  return `<div class="nav">
+    <button class="nav-btn secondary" data-act="back" ${onFirst ? 'disabled' : ''}>Back</button>
+    ${next}
+  </div>`;
+}
+
+function render() {
+  const app = document.getElementById('app');
+  app.innerHTML = SCREENS[state.screen]() + nav();
+  document.getElementById('bar').style.width = (state.screen / 5 * 100) + '%';
+  window.scrollTo(0, 0);
+}
+
+// ---------- Events (one delegated listener, so nothing goes stale) ----------
+document.getElementById('app').addEventListener('click', e => {
+  const el = e.target.closest('[data-act]');
+  if (!el || el.disabled) return;
+  const act = el.dataset.act;
+
+  if (act === 'next') { state.screen = Math.min(5, state.screen + 1); render(); }
+  else if (act === 'back') { state.screen = Math.max(0, state.screen - 1); render(); }
+  else if (act === 'restart') {
+    state.screen = 0; state.pick = null; state.thr = 0.3;
+    state.answers = { q1: null, q2: null };
+    render();
+  }
+  else if (act === 'pick') { state.pick = +el.dataset.i; render(); }
+  else if (act === 'answer') {
+    const q = el.dataset.q, val = el.dataset.val;
+    if (state.answers[q]) return;
+    const correct = val === 'a';
+    state.answers[q] = { val, ok: correct };
+    render();
+  }
+});
+
+// slider: update only the parts that depend on it, so dragging stays smooth
+document.getElementById('app').addEventListener('input', e => {
+  if (e.target.id !== 'thr') return;
+  state.thr = +e.target.value;
+  document.getElementById('thrVal').textContent = state.thr.toFixed(2);
+  document.getElementById('cutGrid').innerHTML = cutCards();
+  document.getElementById('count').innerHTML = countText();
+});
+
+render();
+</script>
+</body>
+</html>
